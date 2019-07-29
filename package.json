@@ -1,0 +1,33 @@
+{
+  "name": "send-mail",
+  "version": "1.0.0",
+  "description": "Envió de automático de correos electrónicos",
+  "main": "index.js",
+  "dependencies": {
+    "node-fetch": "^2.6.0",
+    "nodemailer": "^6.3.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erickfabricio/send-mail.git"
+  },
+  "keywords": [
+    "send",
+    "mail",
+    "notifications",
+    "automatic",
+    "nodemailer"
+  ],
+  "author": "Erick Fabricio Martínez Castellanos - https://erickfabricio.com",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/erickfabricio/send-mail/issues"
+  },
+  "homepage": "https://github.com/erickfabricio/send-mail#readme"
+}
