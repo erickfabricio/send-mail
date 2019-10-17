@@ -1,2 +1,11 @@
 # send-mail
-Envió de automático de correos electrónicos
+
+Envió automático de correos electrónicos implementado api REST con MongoDB.
+
+------------
+#### Autor
+[Erick Fabricio](https://erickfabricio.com)
+
+<https://erickfabricio.com>
+
+<mail@erickfabricio.com>

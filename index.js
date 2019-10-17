@@ -1,36 +1,47 @@
+/**
+ * Autor...: Erick Fabricio Martínez Castellanos
+ * Web.....: https://erickfabricio.com
+ * Email...: mail@erickfabricio.com
+ * GitHub..: https://github.com/erickfabricio
+ */
+
 const nodemailer = require('nodemailer');
 const request = require("request-promise");
 const util = require('util');
 const sleep = util.promisify(setTimeout);
 
 const api = "http://localhost:3000/api";
-const time = 5000 //10s
-var ciclos = 0;
+const time = 10000 //10s
+var cycles = 0;
+var notificationsProcessed = [];
 
 start();
 
 /**
- * Bucle infinito para la busqueda de notificaciones.
+ * Infinite loop for notification search
  */
 async function start(){    
+
     while(true){
-        ciclos++;
+        cycles++;
 
-        await console.log("********* Inicio ciclo: " + ciclos + " *********");
-        console.time('Measuring time');
+        await console.log("********* Start cycle: " + cycles + " *********");
+        await console.time('Measuring time');
 
-        await get();
+        
+        await process();
+        await console.log("Notifications processed: " + notificationsProcessed.length);
         await sleep(time);
 
-        console.timeEnd('Measuring time');
-        await console.log("********* Fin ciclo: " + ciclos + " ********* \r\n");        
+        await console.timeEnd('Measuring time');
+        await console.log("********* End of cycle: " + cycles + " ********* \r\n");        
     }
 }
 
 /**
- * Obtiene un Array con de las notificaciones pendientes.
+ * Get an Array with pending notifications
  */
-async function get(){
+async function process(){
     await request.get(
         {
             uri: `${api}/notifications`,
@@ -38,37 +49,59 @@ async function get(){
             body: {query: {state : "P"}, parms: ""}
         }
     ).then(notifications => {
-        notifications.forEach(async notification => {               
-            await generate(notification);
-            await update(notification);
+        
+        console.log("Notifications found: " + notifications.length);
+
+        notifications.forEach(async notification => {
+
+            //Verify existence
+            const result = notificationsProcessed.find(notificationProcessed => notificationProcessed._id === notification._id);
+            
+            if(result === undefined){
+                console.log("The notification will be processed: " + notification._id);
+                notificationsProcessed.push(notification);
+                await generate(notification);
+                await update(notification);
+            }else{
+                console.log("Notification already exists: " + notification._id);
+            }
+            
         })
-        console.log("Notifications: " + notifications.length);
+
     });
 }
 
 /**
- * Verifica que el producto este activo para su envio.
+ * Verify that the product is active for shipping
  * @param {*} notification 
  */
-async function generate(notification){        
-    await request.get(
-        {
-            uri: `${api}/products`,
-            json: true,
-            body: {query:{ _id: notification.product}, parms: "service name mail password state"}
-        }
-    ).then(async products => {
-        if(products.length > 0){
-            let product =  products[0]; 
-            if(product.state == "A"){                
-                await send(product, notification);
-            }else{
-                notification.state = `E:Producto inactivo`;
+async function generate(notification){   
+    
+    try{
+        await request.get(
+            {
+                uri: `${api}/products`,
+                json: true,
+                body: {query:{ _id: notification.product}, parms: "service name mail password state"}
             }
-        }else{
-            notification.state = `E:Producto no existente`;
-        }
-    });
+        ).then(async products => {
+            if(products.length > 0){
+                let product =  products[0]; 
+                if(product.state == "A"){                
+                    await send(product, notification);
+                }else{
+                    notification.state = `E:Inactive product`;
+                }
+            }else{
+                notification.state = `E:Non-existent product`;
+            }
+        });
+    }catch(error){
+        console.log("Product does not exist, product_id:" + notification.product);
+        notification.state = `E:Non-existent product`;
+    }
+    
+    
 }
 
 /**
@@ -109,7 +142,7 @@ async function send(product, notification){
 }
 
 /**
- * Actualización de la notificación.
+ * Update notification status
  * @param {*} notification 
  */
 async function update(notification){   
@@ -119,8 +152,8 @@ async function update(notification){
             json: true,
             body: {state: notification.state, sentDate: new Date()}
         }
-    ).then(body => {
-        console.log(notification.state);
-        console.log(body);        
+    ).then(body => {        
+        //console.log(notification.state);
+        //console.log(body);        
     });
 }
