@@ -9,9 +9,10 @@ const nodemailer = require('nodemailer');
 const request = require("request-promise");
 const util = require('util');
 const sleep = util.promisify(setTimeout);
+const config = require('./config');
 
-const api = "http://localhost:3000/api";
-const time = 10000 //10s
+const api = config.api;
+const time = config.time;
 var cycles = 0;
 var notificationsProcessed = [];
 
