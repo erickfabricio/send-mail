@@ -1,7 +1,7 @@
 const config = {};
 
-config.api = "http://localhost:3000/api";
-config.token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFwcDAxIiwibmFtZSI6IlNlbmQtTWFpbCIsInN0YXRlIjoiQSIsImlhdCI6MTU3MTQ2NDUzNCwiZXhwIjoxNTcxNTUwOTM0fQ.ugn1gnNgGha88OqLoeevJ_E-ZKgGzv8_n87bA1Qzw9w"
+config.api = "http://localhost:3001/api";
+config.token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODYyMTU3NTcsImRhdGEiOnsiaW5mbyI6IkRFVi1Qb3N0bWFuIn0sImlhdCI6MTU4MzYyMzc1N30.Jo-15sckkaS4O_pDPBU8HWW5VbY5wy-_Tnq2YZ564Q4"
 config.time = 10000 //10seg
 
 module.exports = config;
